@@ -1,0 +1,31 @@
+#version 330
+
+out vec4 pixelColor; //Zmienna wyjsciowa fragment shadera. Zapisuje sie do niej ostateczny (prawie) kolor piksela
+
+in vec4 iV;
+in vec4 iN;
+in vec4 iL;
+in vec4 iC;
+
+float shininess=50;
+
+
+
+void main(void) {
+	vec4 eyeN=normalize(iN);
+	vec4 eyeV=normalize(iV);
+	vec4 eyeL=normalize(iL);
+	vec4 eyeR=reflect(-eyeL,eyeN);
+
+	float nl=max(0,dot(eyeL,eyeN));
+	float rv=pow(max(0,dot(eyeR,eyeV)),shininess);
+
+	vec4 La=vec4(0,0,0,0); //kolor œwiat³a otoczenia
+	vec4 Ma=vec4(0,0,0,0); //kolor materia³u dla œwiat³a otoczenia
+	vec4 Ld=vec4(1,1,1,1); //kolor œwiat³a rozpraszanego
+	vec4 Md=iC;            //kolor materia³u dla œwiat³a rozpraszanego
+	vec4 Ls=vec4(1,1,1,0); //kolor œwiat³a odbijanego
+	vec4 Ms=vec4(1,1,1,0); //kolor materia³u dla œwiat³a odbitego
+
+	pixelColor=Md;//La*Ma+Ld*Md*0.8+Ls*Ms*rv;
+}
